@@ -1,8 +1,9 @@
 ﻿using System;
+using XGame.Domain.Interface.Arguments;
 
 namespace XGame.Domain.Arguments.Jogador
 {
-    public class AdicionarJogadorResponse
+    public class AdicionarJogadorResponse : IResponse
     {
         public Guid Id { get; set; }
 
