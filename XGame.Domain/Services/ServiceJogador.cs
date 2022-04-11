@@ -43,7 +43,7 @@ namespace XGame.Domain.Services
             var email = new Email("Cadu");
             var jogador = new Jogador(email, "123");
 
-            AddNotifications(jogador);
+            AddNotifications(jogador, email); //adiciona as notificações ao retorno para a camada da chamada
             if (jogador.IsInvalid())
             { return null; }
 

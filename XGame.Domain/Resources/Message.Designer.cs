@@ -70,7 +70,7 @@ namespace XGame.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} inválida.
+        ///   Looks up a localized string similar to {0} invalida.
         /// </summary>
         public static string X0_INVALIDA {
             get {
@@ -79,7 +79,7 @@ namespace XGame.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} inválido.
+        ///   Looks up a localized string similar to {0} invalido.
         /// </summary>
         public static string X0_INVALIDO {
             get {
