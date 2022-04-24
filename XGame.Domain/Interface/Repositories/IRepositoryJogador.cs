@@ -1,13 +1,19 @@
 ﻿using System;
-using XGame.Domain.Arguments.Jogador;
+using System.Collections.Generic;
 using XGame.Domain.Entities;
 
 namespace XGame.Domain.Interface.Repositories
 {
     public interface IRepositoryJogador
     {
-        AutenticarJogadorResponse AutenticarJogador(AutenticarJogadorRequest request);
+        Jogador AutenticarJogador(string email, string senha);
 
-        Guid AdicionarJogador(Jogador jogador);
+        Jogador AdicionarJogador(Jogador jogador);
+
+        IEnumerable<Jogador> ListarJogador();
+
+        Jogador ObterJogadorPorId( Guid Id);
+
+        void AlterarJogador(Jogador jogador);
     }
 }

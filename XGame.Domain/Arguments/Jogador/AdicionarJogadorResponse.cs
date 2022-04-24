@@ -1,4 +1,5 @@
 ﻿using System;
+using XGame.Domain.Entities;
 using XGame.Domain.Interface.Arguments;
 
 namespace XGame.Domain.Arguments.Jogador
@@ -8,5 +9,13 @@ namespace XGame.Domain.Arguments.Jogador
         public Guid Id { get; set; }
 
         public string Message { get; set; }
+
+        public static explicit operator AdicionarJogadorResponse(Entities.Jogador entidade)
+        {
+            return new AdicionarJogadorResponse() {
+                Id = entidade.Id,
+                Message = Resources.Message.OPERACAO_REALIZADA_COM_SUCESSO
+            };
+        }
     }
 }

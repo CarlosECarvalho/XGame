@@ -1,6 +1,8 @@
 ﻿using prmToolkit.NotificationPattern;
 using prmToolkit.NotificationPattern.Extensions;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using XGame.Domain.Arguments.Jogador;
 using XGame.Domain.Entities;
 using XGame.Domain.Interface.Repositories;
@@ -25,30 +27,66 @@ namespace XGame.Domain.Services
 
         public AdicionarJogadorResponse AdicionarJogador(AdicionarJogadorRequest request)
         {
-            Jogador jogador = new Jogador();
-            jogador.Email = request.Email;
-            jogador.Nome = request.Nome;
-            jogador.Senha = request.Senha;
-            jogador.Status = Enums.EnumSituacaoJogador.Processando;
+            var nome = new Nome(request.PrimeiroNome, request.Sobrenome);
+            var email = new Email(request.Email);
+            Jogador jogador = new Jogador(nome, email, request.Senha);
+      
+            if (this.IsInvalid())
+            {
+                return null;
+            }
+            jogador = _repositoryJogador.AdicionarJogador(jogador);
+            return (AdicionarJogadorResponse)jogador;
+        }
 
-            Guid id = _repositoryJogador.AdicionarJogador(jogador);
-            return new AdicionarJogadorResponse() { Id = id, Message = "Operação Realizada com sucesso." };
+        public AlterarJogadorResponse AlterarJogador(AlterarJogadorRequest request)
+        {
+            if (request == null)
+            { AddNotification("AlterarJogadorRequest", Message.X0_E_OBRIGATORIO.ToFormat("AlterarJogadorRequest")); }
+
+            Jogador jogador = _repositoryJogador.ObterJogadorPorId(request.Id);
+
+            if (jogador == null)
+            { AddNotification("Id", Message.DADOS_NAO_ENCONTRADOS);
+                return null;
+            }
+
+            var nome = new Nome(request.PrimeiroNome, request.Sobrenome);
+            var email = new Email(request.Email);
+
+            jogador.AlterarJogador(nome, email, jogador.Status);
+
+            AddNotifications(jogador); //adiciona as notificações ao retorno para a camada da chamada
+            if (jogador.IsInvalid())
+            { return null; }
+
+            _repositoryJogador.AlterarJogador(jogador);
+
+
+            return (AlterarJogadorResponse)jogador;
         }
 
         public AutenticarJogadorResponse AutenticarJogador(AutenticarJogadorRequest request)
         {
             if (request == null)
-            { AddNotification("AutenticarJogadorRequest", Message.X0_É_OBRIGATÓRIO.ToFormat("AutenticarJogadorRequest")); }
+            { AddNotification("AutenticarJogadorRequest", Message.X0_E_OBRIGATORIO.ToFormat("AutenticarJogadorRequest")); }
 
-            var email = new Email("Cadu");
-            var jogador = new Jogador(email, "123");
+            var email = new Email(request.Email);
+            var jogador = new Jogador(email, request.Senha);
 
             AddNotifications(jogador, email); //adiciona as notificações ao retorno para a camada da chamada
             if (jogador.IsInvalid())
             { return null; }
 
-            var response = _repositoryJogador.AutenticarJogador(request);
-            return response;
+            jogador = _repositoryJogador.AutenticarJogador(jogador.Email.Endereco, jogador.Senha);
+
+          
+            return (AutenticarJogadorResponse) jogador;
+        }
+
+        public IEnumerable<JogadorResponse> ListarJogador()
+        {
+            return _repositoryJogador.ListarJogador().ToList().Select(jogador => (JogadorResponse)jogador).ToList();
         }
     }
 }
